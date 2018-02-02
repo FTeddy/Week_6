@@ -1,0 +1,43 @@
+* {
+	margin:0;
+	padding:0;
+}
+
+body {
+}
+
+#main {
+  padding: 40px;
+  height:100vh;
+  text-align: center; /*pair with display: inline-block on child*/
+}
+
+#game-screen {
+  display: inline-block;
+  padding: 5px;
+  max-width: 840px;
+  /* max-height: 200px; */
+  border: 1px solid black;
+}
+
+#display {
+  padding: 5px;
+  border: 1px solid black;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.log{
+  margin: 5px;
+  padding : 5px;
+  width: 220px;
+  height: 100px;
+  background-color: rgb(240, 240, 240);
+}
+
+#control-screen {
+  margin-top: 5px;
+  padding: 5px;
+  border: 1px solid black;
+}
