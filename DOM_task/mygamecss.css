@@ -15,7 +15,7 @@ body {
 #game-screen {
   display: inline-block;
   padding: 5px;
-  max-width: 840px;
+  max-width: 900px;
   /* max-height: 200px; */
   border: 1px solid black;
 }
@@ -31,9 +31,16 @@ body {
 .log{
   margin: 5px;
   padding : 5px;
-  width: 220px;
-  min-height: 100px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  width: 200px;
+  height: 150px;
+  overflow-y: auto;
   background-color: rgb(240, 240, 240);
+}
+
+#combat-log {
+  width: 400px;
 }
 
 #control-screen {

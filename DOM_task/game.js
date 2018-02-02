@@ -40,20 +40,25 @@ var displayScreen = document.createElement('div');
   // display => 3 logs
   var playerLogScreen = document.createElement('div');
     playerLogScreen.setAttribute('class', 'log');
-    playerLogScreen.appendChild(document.createTextNode('player log'));
+    // playerLogScreen.appendChild(document.createTextNode('player log'));
     displayScreen.appendChild(playerLogScreen);
   var combatLogScreen = document.createElement('div');
     combatLogScreen.setAttribute('class', 'log');
-    combatLogScreen.appendChild(document.createTextNode('combat log'));
+    combatLogScreen.setAttribute('id', 'combat-log');
+    // combatLogScreen.appendChild(document.createTextNode('combat log'));
     displayScreen.appendChild(combatLogScreen);
   var monsterLogScreen = document.createElement('div');
     monsterLogScreen.setAttribute('class', 'log');
-    monsterLogScreen.appendChild(document.createTextNode('monster log'));
+    // monsterLogScreen.appendChild(document.createTextNode('monster log'));
     displayScreen.appendChild(monsterLogScreen);
     var docLog = document.getElementsByClassName('log');
     var docPlayerLog = docLog[0];
     var docCombatLog = docLog[1];
     var docMonsterLog = docLog[2];
+
+function updateScroll(){
+  docCombatLog.scrollTop = docCombatLog.scrollHeight;
+}
 
 // gameScreen => controls/button
 var controlScreen = document.createElement('div');
@@ -61,8 +66,6 @@ var controlScreen = document.createElement('div');
   controlScreen.appendChild(document.createTextNode('Controls'));
   gameScreen.appendChild(controlScreen);
   var docControlScreen = document.getElementById('control-screen');
-
-
 
 // game process #########################################
 
@@ -72,7 +75,6 @@ var roundCount;
 var turnCount;
 
 // player variables ######################################
-
 // set player display to welcome message
 var welcomeMessage = document.createElement('p');
 var welcomeMessageText= document.createTextNode('Welcome to Proto Arena! Please enter your name');
@@ -127,10 +129,11 @@ function checkPlayerName(){
 // declare all game code as myGame
 
 function myGame(){
+
   var playerLevel= 1;
   var playerHealth;
   var playerATK= 400;
-  var playerDEF= 100;
+  var playerDEF= 110;
   var playerClass;
 
   // Clear logs and docs ####################################
@@ -139,25 +142,21 @@ function myGame(){
       docPlayerLog.removeChild(docPlayerLog.firstChild);
     }
   }
-
   function clearCombatLog(){
     while(docCombatLog.hasChildNodes()){
       docCombatLog.removeChild(docCombatLog.firstChild);
     }
   }
-
   function clearMonsterLog(){
     while(docMonsterLog.hasChildNodes()){
       docMonsterLog.removeChild(docMonsterLog.firstChild);
     }
   }
-
   function clearControlScreen(){
     while(docControlScreen.hasChildNodes()){
       docControlScreen.removeChild(docControlScreen.firstChild);
     }
   }
-
 
   // player functions
   function playerHealthCalc(InputLevelHere){
@@ -169,6 +168,7 @@ function myGame(){
     return playerMaxHealth;
   }
   function playerStatuslog(){
+    // playerHealthCalc();
 
     var docPlayerStatus = document.createElement('p');
     docPlayerStatus.setAttribute('id', 'player-status');
@@ -199,10 +199,11 @@ function myGame(){
     // console.log(monsterHealth);
     var docPlayerDMG = document.createElement('p');
     docPlayerDMG.setAttribute('id', 'player-damage');
-    docPlayerDMG.appendChild(document.createTextNode(playerName +' attack hits '+monsterName+' for '+damage+'. Current '+monsterName+' health: '+monsterHealth));
+    docPlayerDMG.appendChild(document.createTextNode(playerName +' attack hits '+monsterName+' for '+damage+'.'));
     // console.log(playerName +' attack hits '+monsterName+' for '+damage+'. Current '+monsterName+' health: '+monsterHealth);
     // display on docCombatLog
     docCombatLog.appendChild(docPlayerDMG);
+    updateScroll();
   }
   function playerSpecialSkill(){
     var damageVariance= (Math.floor(Math.random()*(120-90)) + 90)/100;
@@ -211,10 +212,11 @@ function myGame(){
 
     var docPlayerSkill = document.createElement('p');
     docPlayerSkill.setAttribute('id', 'player-skill');
-    docPlayerSkill.appendChild(document.createTextNode(playerName +' Cast Smite hitting '+monsterName+' for '+damage+'. Current '+monsterName+' health: '+monsterHealth));
+    docPlayerSkill.appendChild(document.createTextNode(playerName +' Cast Smite hitting '+monsterName+' for '+damage+'.'));
     // console.log(playerName +' Cast Smite hitting '+monsterName+' for '+damage+'. Current '+monsterName+' health: '+monsterHealth);
     // display on docCombatLog
     docCombatLog.appendChild(docPlayerSkill);
+    updateScroll();
   }
   function playerActions(){
     var rng = Math.floor(Math.random()*100);
@@ -232,6 +234,7 @@ function myGame(){
         // console.log(playerName +' attack misses '+monsterName);
         // display on docCombatLog
         docCombatLog.appendChild(docPlayerMiss);
+        updateScroll();
       }
     }
   }
@@ -243,6 +246,7 @@ function myGame(){
   var monsterHealth;
   var monsterATK = 400;
   var monsterDEF = 100;
+
   function monsterHealthCalc(InputLevelHere){
     monsterHealth= 700 +((InputLevelHere/10)*1000);
     return monsterHealth;
@@ -261,10 +265,11 @@ function myGame(){
     // monsterStatuslog();
   }
   function bossSummon(){
+    monsterLevel=5;
     monsterSummon();
     monsterName='Great '+ monsterName;
-    monsterLevel=5;
-    monsterHealth= 1000+monsterHealth;
+    monsterHealth= 800+monsterHealth;
+    // var bossMaxHealth = monsterHealth;
     monsterATK=monsterATK+100;
   }
   function monsterStatusReset(){
@@ -290,6 +295,15 @@ function myGame(){
     // display on docMonsterLog
     docMonsterLog.appendChild(docMonsterStatus);
   }
+  function bossStatuslog(){
+    var docBossStatuslog = document.createElement('p');
+    docBossStatuslog.setAttribute('id', 'monster-status');
+    docBossStatuslog.appendChild(document.createTextNode(monsterName+ ' '+ monsterClass+ ' LV: '+monsterLevel));
+    docBossStatuslog.appendChild(document.createElement('br'));
+    docBossStatuslog.appendChild(document.createTextNode('Health: ' + monsterHealth + ' / ' + (monsterMaxHealthCalc(monsterLevel)+800)));
+    docMonsterLog.appendChild(docBossStatuslog);
+    //
+  }
   function monsterBasicAttack(){
     var damageVariance= (Math.floor(Math.random()*(120-90)) + 90)/100;
     var damage = Math.floor(Math.floor(monsterATK * damageVariance)*100/playerDEF);
@@ -297,10 +311,11 @@ function myGame(){
 
     var docMonsterDMG = document.createElement('p');
     docMonsterDMG.setAttribute('id', 'monster-damage');
-    docMonsterDMG.appendChild(document.createTextNode(monsterName +' attack hits '+playerName+' for '+damage+'. Current '+playerName+' health: '+playerHealth));
+    docMonsterDMG.appendChild(document.createTextNode(monsterName +' attack hits '+playerName+' for '+damage+'.'));
     // console.log(monsterName +' attack hits '+playerName+' for '+damage+'. Current '+playerName+' health: '+playerHealth);
     // display on docCombatLog
     docCombatLog.appendChild(docMonsterDMG);
+    updateScroll();
   }
   function monsterCritAttack(){
     var damageVariance= (Math.floor(Math.random()*(120-90)) + 90)/100;
@@ -309,10 +324,11 @@ function myGame(){
 
     var docMonsterCritDMG = document.createElement('p');
     docMonsterCritDMG.setAttribute('id', 'monster-crit-damage');
-    docMonsterCritDMG.appendChild(document.createTextNode(monsterName +' Critical hits '+playerName+' for '+damage+'. Current '+playerName+' health: '+playerHealth));
+    docMonsterCritDMG.appendChild(document.createTextNode(monsterName +' Critical hits '+playerName+' for '+damage+'.'));
     // console.log(monsterName +' Critical hits '+playerName+' for '+damage+'. Current '+playerName+' health: '+playerHealth);
     // display on docCombatLog
     docCombatLog.appendChild(docMonsterCritDMG);
+    updateScroll();
   }
   function monsterActions(){
     var rng = Math.floor(Math.random()*100);
@@ -330,10 +346,10 @@ function myGame(){
         // console.log(monsterName +' attack misses '+playerName);
         // display on docCombatLog
         docCombatLog.appendChild(docMonsterMiss);
+        updateScroll();
       }
     }
   }
-
 
   // Class variables ##############################################
   function classEffectPlayer(){
@@ -362,34 +378,40 @@ function myGame(){
       }
   }
 
-
-  // ROUND PROCESS EDIT FROM HERE
-
   // name checked, base functions loaded
   // show player stats
   // Set the player
 
-  // if(playerName === '' || typeof playerName !== 'string'){
-  //   // console.log('Please enter your Name');
-  //   // sent this to docMonsterLog
-  // }
-
- // Set playerClass
+  // Set playerClass
     playerClass = Class[Math.floor(Math.random()*Class.length)];
     classEffectPlayer();
     // console.log(playerName + ', you have been summoned as '+ playerClass + ' To fight in the Eternal Arena!');
     // send this to docCombatLog
+    clearCombatLog();
     var playerStats = document.createElement('p');
     playerStats.setAttribute('id', 'playerHP');
     playerStats.appendChild(document.createTextNode(playerName + ', you have been summoned as '+ playerClass + ' To fight in the Eternal Arena!'));
-    docPlayerLog.removeChild(welcomeMessage);
+    // docPlayerLog.removeChild(welcomeMessage);
     docCombatLog.appendChild(playerStats);
     // display player stat on docPlayerLog
+    clearPlayerLog();
+    clearMonsterLog();
+    clearPlayerLog();
+    playerHealthCalc(playerLevel);
     playerStatuslog();
+    // remove all child inside control-screen
+    clearControlScreen();
+    // create button for starting round.
+    var startButton = document.createElement('button');
+    startButton.setAttribute('type', 'button');
+    startButton.setAttribute('id', 'start-button');
+    startButton.appendChild(document.createTextNode('Start Game'));
+    docControlScreen.appendChild(startButton);
+    document.getElementById('start-button').addEventListener('click', startCombat);
+    // press start button to begin round, reset docCombatLog
 
     roundCount = 1;
     function playRound(roundCount){
-
       turnCount = 1;
       playerStatusReset();
       monsterSummon();
@@ -419,8 +441,43 @@ function myGame(){
       document.getElementById('fight-button').addEventListener('click', startFightButton);
       // press start button to begin attack phase
     }
-    // playRound(roundCount); // testing
+    function playBossRound(){
+      turnCount = 1;
+      playerStatusReset();
+      bossSummon();
+      // monsterStatusReset();
 
+      // remove three logs
+      clearCombatLog();
+      clearPlayerLog()
+      clearMonsterLog()
+
+      var docRoundCount = document.createElement('p');
+      docRoundCount.setAttribute('id', 'round-count');
+      docRoundCount.appendChild(document.createTextNode('Begin Final Round: ' + roundCount));
+      docCombatLog.appendChild(docRoundCount);
+      // add player and monster log
+      playerStatuslog();
+      bossStatuslog();
+      // empty control-screen
+      clearControlScreen();
+      // create fight button
+      var fightButton = document.createElement('button');
+      fightButton.setAttribute('type', 'button');
+      fightButton.setAttribute('id', 'fight-button');
+      fightButton.appendChild(document.createTextNode('Attack'));
+      docControlScreen.appendChild(fightButton);
+      document.getElementById('fight-button').addEventListener('click', startFightButton);
+      // press start button to begin attack phase
+    }
+    function startCombat(){
+      // set button for attack
+      if (roundCount === 10){
+        playBossRound(roundCount);
+      } else{
+        playRound(roundCount);
+      }
+    }
     function startFightButton(){
       // clearCombatLog();
       // player attack
@@ -429,24 +486,44 @@ function myGame(){
       monsterStatuslog();
 
       if (monsterHealth <= 0){
-        var docDefeatedMonster = document.createElement('p');
-        docDefeatedMonster.setAttribute('id', 'monster-defeated');
-        docDefeatedMonster.appendChild(document.createTextNode(playerName+' has defeated '+ monsterName+'!'));
-        docCombatLog.appendChild(docDefeatedMonster);
-        playerLevel = playerLevel + 1;
-        monsterLevel=monsterLevel+1;
-        roundCount += 1;
+        if (roundCount === 10){
+          var docDefeatedMonster = document.createElement('p');
+          docDefeatedMonster.setAttribute('id', 'monster-defeated');
+          docDefeatedMonster.appendChild(document.createTextNode(playerName+' has defeated '+ monsterName+'!'));
+          docDefeatedMonster.appendChild(document.createElement('br'));
+          docDefeatedMonster.appendChild(document.createTextNode('Congratulations, you have won the game!'));
+          docCombatLog.appendChild(docDefeatedMonster);
+          updateScroll();
+          // clear control-screen
+          clearControlScreen();
+          // new button to start a new game
+          var resetButton = document.createElement('button');
+          resetButton.setAttribute('type', 'button');
+          resetButton.setAttribute('id', 'reset-button');
+          resetButton.appendChild(document.createTextNode('Reset Game'));
+          docControlScreen.appendChild(resetButton);
+          document.getElementById('reset-button').addEventListener('click', myGame);
+        } else {
+          var docDefeatedMonster = document.createElement('p');
+          docDefeatedMonster.setAttribute('id', 'monster-defeated');
+          docDefeatedMonster.appendChild(document.createTextNode(playerName+' has defeated '+ monsterName+'!'));
+          docCombatLog.appendChild(docDefeatedMonster);
+          updateScroll();
+          playerLevel = playerLevel + 1;
+          monsterLevel=monsterLevel+1;
+          roundCount += 1;
 
-        // create button to play next round
-        clearControlScreen();
-        var nextRound = document.createElement('button');
-        nextRound.setAttribute('type', 'button');
-        nextRound.setAttribute('id', 'next-stage');
-        nextRound.appendChild(document.createTextNode('Next Round'));
-        docControlScreen.appendChild(nextRound);
-        document.getElementById('next-stage').addEventListener('click', startCombat);
-        // press start button to begin round, reset docCombatLog
-        // playRound(roundCount);
+          // create button to play next round
+          clearControlScreen();
+          var nextRound = document.createElement('button');
+          nextRound.setAttribute('type', 'button');
+          nextRound.setAttribute('id', 'next-stage');
+          nextRound.appendChild(document.createTextNode('Next Round'));
+          docControlScreen.appendChild(nextRound);
+          document.getElementById('next-stage').addEventListener('click', startCombat);
+          // press start button to begin round, reset docCombatLog
+          // playRound(roundCount);
+        }
       } else{
         // monster attack
         monsterActions();
@@ -455,36 +532,29 @@ function myGame(){
           docDefeatedPlayer.setAttribute('id', 'player-defeated');
           docDefeatedPlayer.appendChild(document.createTextNode(playerName + ' has been defeated!'));
           docCombatLog.appendChild(docDefeatedPlayer);
+          updateScroll();
           // end game
+          // clear control-screen
+          clearControlScreen();
+          // new button to start a new game
+          var resetButton = document.createElement('button');
+          resetButton.setAttribute('type', 'button');
+          resetButton.setAttribute('id', 'reset-button');
+          resetButton.appendChild(document.createTextNode('Reset Game'));
+          docControlScreen.appendChild(resetButton);
+          document.getElementById('reset-button').addEventListener('click', myGame);
         }
-         clearPlayerLog();
-         playerStatuslog();
+        clearPlayerLog();
+        playerStatuslog();
       }
     }
 
-    function startCombat(){
-      // set button for attack
-      if (roundCount === 10){
-        // playBossRound(roundCount);
-      } else{
-        playRound(roundCount);
-      }
-    }
-
-
-    // remove all child inside control-screen
-    clearControlScreen();
-    // create button for starting round.
-    var startButton = document.createElement('button');
-    startButton.setAttribute('type', 'button');
-    startButton.setAttribute('id', 'start-button');
-    startButton.appendChild(document.createTextNode('Start Game'));
-    docControlScreen.appendChild(startButton);
-    document.getElementById('start-button').addEventListener('click', startCombat);
-    // press start button to begin round, reset docCombatLog
-
+}
 
 // ######### develop ######################################################
+
+  // function update scroll
+
 
 
     // function startCombat
@@ -613,4 +683,3 @@ function myGame(){
   }
 
   */
-}
